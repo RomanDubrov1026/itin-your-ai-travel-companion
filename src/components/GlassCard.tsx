@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
-import { ReactNode } from 'react';
+import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
 interface GlassCardProps {
   children: ReactNode;
@@ -7,14 +7,5 @@ interface GlassCardProps {
 }
 
 export function GlassCard({ children, className }: GlassCardProps) {
-  return (
-    <div
-      className={cn(
-        'glass-card p-6',
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
+  return <div className={cn("glass-card p-6", className)}>{children}</div>;
 }

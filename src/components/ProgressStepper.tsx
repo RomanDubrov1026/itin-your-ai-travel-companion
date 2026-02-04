@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 interface ProgressStepperProps {
   currentStep: number;
@@ -18,20 +18,17 @@ export function ProgressStepper({ currentStep, totalSteps }: ProgressStepperProp
           <div key={step} className="flex items-center">
             <div
               className={cn(
-                'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300',
-                isCompleted && 'bg-primary text-primary-foreground',
-                isCurrent && 'bg-primary/20 border-2 border-primary text-primary',
-                !isCompleted && !isCurrent && 'bg-muted text-muted-foreground'
+                "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-all duration-300",
+                isCompleted && "bg-primary text-primary-foreground",
+                isCurrent && "border-2 border-primary bg-primary/20 text-primary",
+                !isCompleted && !isCurrent && "bg-muted text-muted-foreground",
               )}
             >
-              {isCompleted ? <Check className="w-4 h-4" /> : step}
+              {isCompleted ? <Check className="h-4 w-4" /> : step}
             </div>
             {step < totalSteps && (
               <div
-                className={cn(
-                  'w-8 h-0.5 mx-1',
-                  step < currentStep ? 'bg-primary' : 'bg-muted'
-                )}
+                className={cn("mx-1 h-0.5 w-8", step < currentStep ? "bg-primary" : "bg-muted")}
               />
             )}
           </div>

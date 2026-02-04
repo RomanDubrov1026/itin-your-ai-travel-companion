@@ -1,7 +1,7 @@
-
 # Itin — AI Trip Planner (Phase 1: Core Flow)
 
 ## Overview
+
 Build a responsive, mobile-first trip planning wizard with the dark/blue glassmorphism design from your mockup. This phase covers the complete user journey: Landing → 3-step wizard → Results page.
 
 ---
@@ -9,6 +9,7 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 ## Design System
 
 **Visual Style (matching mockup):**
+
 - Dark blue gradient background (`#0f172a` → `#1e3a5a`)
 - Glassmorphism cards with blur, subtle white borders, soft shadows
 - Lime-green primary buttons (`#a3e635`) with subtle glow
@@ -16,6 +17,7 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 - Rounded corners on all interactive elements
 
 **UI Components:**
+
 - Custom glass card component with backdrop blur
 - Lime CTA button variant
 - Progress stepper for wizard navigation
@@ -26,6 +28,7 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 ## Pages & Features
 
 ### 1. Landing Page (`/`)
+
 - **Header:** "Itin" brand text + hamburger menu icon
 - **Hero:** "Podróż. Zaplanowana." headline with subtext
 - **CTA:** Lime-green "Stwórz plan podróży" button
@@ -34,6 +37,7 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 - **Background:** Dark gradient with decorative city image
 
 ### 2. Step 1 — Destination (`/plan/step-1`)
+
 - **Title:** "Dokąd chcesz pojechać?"
 - **Fields:**
   - Destination autocomplete (Barcelona, Rome, Paris, Lisbon, Prague)
@@ -44,12 +48,14 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 - **Navigation:** Back arrow, Next button (disabled until valid)
 
 ### 3. Step 2 — Interests (`/plan/step-2`)
+
 - **Title:** "Co jest dla Ciebie ważne?"
 - **Multi-select checkboxes:** Jedzenie, Architektura, Muzea, Spokojne tempo, Nightlife, Natura
 - **Pace selector:** Chill / Balanced / Intensive
 - **Navigation:** Back/Next buttons
 
 ### 4. Step 3 — Budget (`/plan/step-3`)
+
 - **Title:** "Budżet i preferencje"
 - **Fields:**
   - Budget range slider (displays "Budżet: 3 000 – 4 000 zł")
@@ -60,6 +66,7 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 - **Loading modal:** "Analizujemy transport, noclegi i atrakcje…" with animated dots
 
 ### 5. Results Page (`/result`)
+
 - **Header:** "{Destination} • {N} dni" + "Plan dopasowany do Ciebie"
 - **Summary cards:** Transport option, Hotel recommendation, Total budget
 - **Itinerary:** Day-by-day cards with attractions (toggleable checkboxes)
@@ -74,12 +81,14 @@ Build a responsive, mobile-first trip planning wizard with the dark/blue glassmo
 ## Data & State
 
 **Zustand Store with localStorage:**
+
 - Destination, origin, dates, travelers
 - Selected interests and pace
 - Budget range, accommodation preferences
 - Generated itinerary data
 
 **Mock Data Services (typed interfaces):**
+
 - `getAttractions()` — 15+ Barcelona attractions with tags, duration, price
 - `searchTransport()` — 3 options (cheapest/fastest/balanced)
 - `searchHotels()` — 5 hotel options with ratings and prices
@@ -102,6 +111,7 @@ Barcelona trip, 12–16 May, 2 travelers, 3000–4000 PLN budget
 ---
 
 ## Phase 2 (Future)
+
 - Real API integrations for hotels/transport
 - Interactive map component
 - More destinations and attractions data

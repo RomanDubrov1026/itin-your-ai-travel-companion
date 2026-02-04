@@ -1,27 +1,27 @@
-import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { GlassCard } from '@/components/GlassCard';
-import { ProgressStepper } from '@/components/ProgressStepper';
-import { useTripStore } from '@/store/trip-store';
-import { INTERESTS } from '@/lib/types';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { GlassCard } from "@/components/GlassCard";
+import { ProgressStepper } from "@/components/ProgressStepper";
+import { useTripStore } from "@/store/trip-store";
+import { INTERESTS } from "@/lib/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const step2Schema = z.object({
-  interests: z.array(z.string()).min(1, 'Wybierz przynajmniej jedno zainteresowanie'),
-  pace: z.enum(['chill', 'balanced', 'intensive']),
+  interests: z.array(z.string()).min(1, "Wybierz przynajmniej jedno zainteresowanie"),
+  pace: z.enum(["chill", "balanced", "intensive"]),
 });
 
 type Step2FormData = z.infer<typeof step2Schema>;
 
 const paceOptions = [
-  { value: 'chill', label: 'Chill', emoji: '🧘' },
-  { value: 'balanced', label: 'Balanced', emoji: '⚖️' },
-  { value: 'intensive', label: 'Intensive', emoji: '🚀' },
+  { value: "chill", label: "Chill", emoji: "🧘" },
+  { value: "balanced", label: "Balanced", emoji: "⚖️" },
+  { value: "intensive", label: "Intensive", emoji: "🚀" },
 ] as const;
 
 export default function Step2() {
@@ -39,18 +39,16 @@ export default function Step2() {
       interests: formData.interests,
       pace: formData.pace,
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
-  const selectedInterests = watch('interests');
-  const selectedPace = watch('pace');
+  const selectedInterests = watch("interests");
+  const selectedPace = watch("pace");
 
   const toggleInterest = (id: string) => {
     const current = selectedInterests || [];
-    const updated = current.includes(id)
-      ? current.filter((i) => i !== id)
-      : [...current, id];
-    setValue('interests', updated, { shouldValidate: true });
+    const updated = current.includes(id) ? current.filter((i) => i !== id) : [...current, id];
+    setValue("interests", updated, { shouldValidate: true });
   };
 
   const onSubmit = (data: Step2FormData) => {
@@ -58,19 +56,19 @@ export default function Step2() {
       interests: data.interests,
       pace: data.pace,
     });
-    navigate('/plan/step-3');
+    navigate("/plan/step-3");
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="flex items-center justify-between p-4 md:p-6">
         <Link
           to="/plan/step-1"
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="rounded-lg p-2 transition-colors hover:bg-white/10"
           aria-label="Wróć"
         >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
+          <ArrowLeft className="h-6 w-6 text-foreground" />
         </Link>
         <h1 className="text-xl font-bold text-foreground">Itin</h1>
         <div className="w-10" />
@@ -82,11 +80,11 @@ export default function Step2() {
       </div>
 
       {/* Form */}
-      <main className="flex-1 flex flex-col items-center px-4 py-6">
-        <div className="max-w-md w-full">
+      <main className="flex flex-1 flex-col items-center px-4 py-6">
+        <div className="w-full max-w-md">
           <GlassCard>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <h2 className="text-2xl font-bold text-foreground text-center mb-6">
+              <h2 className="mb-6 text-center text-2xl font-bold text-foreground">
                 Co jest dla Ciebie ważne?
               </h2>
 
@@ -97,16 +95,16 @@ export default function Step2() {
                   {INTERESTS.map(({ id, label, icon }) => (
                     <label
                       key={id}
-                      className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-all ${
+                      className={`flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-all ${
                         selectedInterests?.includes(id)
-                          ? 'border-primary bg-primary/10'
-                          : 'border-border bg-input hover:border-muted-foreground'
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-input hover:border-muted-foreground"
                       }`}
                     >
                       <Checkbox
                         checked={selectedInterests?.includes(id)}
                         onCheckedChange={() => toggleInterest(id)}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        className="data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                       />
                       <span className="text-lg">{icon}</span>
                       <span className="text-sm font-medium text-foreground">{label}</span>
@@ -125,17 +123,17 @@ export default function Step2() {
                   {paceOptions.map(({ value, label, emoji }) => (
                     <label
                       key={value}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border cursor-pointer transition-all ${
+                      className={`flex cursor-pointer flex-col items-center gap-2 rounded-lg border p-4 transition-all ${
                         selectedPace === value
-                          ? 'border-primary bg-primary/10'
-                          : 'border-border bg-input hover:border-muted-foreground'
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-input hover:border-muted-foreground"
                       }`}
                     >
                       <input
                         type="radio"
                         value={value}
                         checked={selectedPace === value}
-                        onChange={() => setValue('pace', value, { shouldValidate: true })}
+                        onChange={() => setValue("pace", value, { shouldValidate: true })}
                         className="sr-only"
                       />
                       <span className="text-2xl">{emoji}</span>
@@ -151,15 +149,11 @@ export default function Step2() {
                   type="button"
                   variant="outline"
                   className="flex-1"
-                  onClick={() => navigate('/plan/step-1')}
+                  onClick={() => navigate("/plan/step-1")}
                 >
                   Wstecz
                 </Button>
-                <Button
-                  type="submit"
-                  className="btn-lime flex-1"
-                  disabled={!isValid}
-                >
+                <Button type="submit" className="btn-lime flex-1" disabled={!isValid}>
                   Dalej
                 </Button>
               </div>

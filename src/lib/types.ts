@@ -6,19 +6,19 @@ export interface TripFormData {
   origin: string;
   startDate: Date | null;
   endDate: Date | null;
-  flexibility: 'strict' | 'flexible';
+  flexibility: "strict" | "flexible";
   travelers: number;
 
   // Step 2: Interests
   interests: string[];
-  pace: 'chill' | 'balanced' | 'intensive';
+  pace: "chill" | "balanced" | "intensive";
 
   // Step 3: Budget
   budgetMin: number;
   budgetMax: number;
-  accommodationType: 'apartment' | 'hotel' | 'any';
-  hotelQuality: '3' | '4' | '5' | 'any';
-  transportPreference: 'cheapest' | 'fastest' | 'best-value';
+  accommodationType: "apartment" | "hotel" | "any";
+  hotelQuality: "3" | "4" | "5" | "any";
+  transportPreference: "cheapest" | "fastest" | "best-value";
 }
 
 export interface Attraction {
@@ -34,13 +34,13 @@ export interface Attraction {
 
 export interface TransportOption {
   id: string;
-  type: 'flight' | 'bus' | 'train';
+  type: "flight" | "bus" | "train";
   carrier: string;
   departureTime: string;
   arrivalTime: string;
   duration: string;
   price: number; // per person in PLN
-  preference: 'cheapest' | 'fastest' | 'best-value';
+  preference: "cheapest" | "fastest" | "best-value";
 }
 
 export interface HotelOption {
@@ -79,29 +79,23 @@ export interface GeneratedPlan {
 }
 
 export const DESTINATIONS = [
-  'Barcelona',
-  'Rome',
-  'Paris',
-  'Lisbon',
-  'Prague',
-  'Amsterdam',
-  'Vienna',
-  'Berlin',
+  "Barcelona",
+  "Rome",
+  "Paris",
+  "Lisbon",
+  "Prague",
+  "Amsterdam",
+  "Vienna",
+  "Berlin",
 ] as const;
 
-export const ORIGINS = [
-  'Kraków',
-  'Warsaw',
-  'Berlin',
-  'Vienna',
-  'Prague',
-] as const;
+export const ORIGINS = ["Kraków", "Warsaw", "Berlin", "Vienna", "Prague"] as const;
 
 export const INTERESTS = [
-  { id: 'food', label: 'Jedzenie', icon: '🍽️' },
-  { id: 'architecture', label: 'Architektura', icon: '🏛️' },
-  { id: 'museums', label: 'Muzea', icon: '🎨' },
-  { id: 'relaxed', label: 'Spokojne tempo', icon: '🧘' },
-  { id: 'nightlife', label: 'Nightlife', icon: '🎉' },
-  { id: 'nature', label: 'Natura', icon: '🌿' },
+  { id: "food", label: "Jedzenie", icon: "🍽️" },
+  { id: "architecture", label: "Architektura", icon: "🏛️" },
+  { id: "museums", label: "Muzea", icon: "🎨" },
+  { id: "relaxed", label: "Spokojne tempo", icon: "🧘" },
+  { id: "nightlife", label: "Nightlife", icon: "🎉" },
+  { id: "nature", label: "Natura", icon: "🌿" },
 ] as const;

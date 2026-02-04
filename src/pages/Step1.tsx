@@ -1,30 +1,30 @@
-import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { addDays } from 'date-fns';
-import { pl } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
-import { ArrowLeft, Users, Calendar as CalendarIcon } from 'lucide-react';
-import type { DateRange } from 'react-day-picker';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { GlassCard } from '@/components/GlassCard';
-import { ProgressStepper } from '@/components/ProgressStepper';
-import { useTripStore } from '@/store/trip-store';
-import { DESTINATIONS, ORIGINS } from '@/lib/types';
-import { format } from 'date-fns';
-import { useState, useRef, useEffect } from 'react';
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { addDays } from "date-fns";
+import { pl } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, Users, Calendar as CalendarIcon } from "lucide-react";
+import type { DateRange } from "react-day-picker";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { GlassCard } from "@/components/GlassCard";
+import { ProgressStepper } from "@/components/ProgressStepper";
+import { useTripStore } from "@/store/trip-store";
+import { DESTINATIONS, ORIGINS } from "@/lib/types";
+import { format } from "date-fns";
+import { useState, useRef, useEffect } from "react";
 
 const step1Schema = z.object({
-  destination: z.string().min(1, 'Wybierz miejsce docelowe'),
-  origin: z.string().min(1, 'Wybierz miejsce wyjazdu'),
-  startDate: z.string().min(1, 'Wybierz datę początkową'),
-  endDate: z.string().min(1, 'Wybierz datę końcową'),
-  flexibility: z.enum(['strict', 'flexible']),
+  destination: z.string().min(1, "Wybierz miejsce docelowe"),
+  origin: z.string().min(1, "Wybierz miejsce wyjazdu"),
+  startDate: z.string().min(1, "Wybierz datę początkową"),
+  endDate: z.string().min(1, "Wybierz datę końcową"),
+  flexibility: z.enum(["strict", "flexible"]),
   travelers: z.number().min(1).max(10),
 });
 
@@ -51,18 +51,18 @@ export default function Step1() {
     defaultValues: {
       destination: formData.destination,
       origin: formData.origin,
-      startDate: formData.startDate ? format(formData.startDate, 'yyyy-MM-dd') : '',
-      endDate: formData.endDate ? format(formData.endDate, 'yyyy-MM-dd') : '',
+      startDate: formData.startDate ? format(formData.startDate, "yyyy-MM-dd") : "",
+      endDate: formData.endDate ? format(formData.endDate, "yyyy-MM-dd") : "",
       flexibility: formData.flexibility,
       travelers: formData.travelers,
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
-  const destination = watch('destination');
-  const origin = watch('origin');
-  const startDate = watch('startDate');
-  const endDate = watch('endDate');
+  const destination = watch("destination");
+  const origin = watch("origin");
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
 
   const range: DateRange = {
     from: startDate ? new Date(startDate) : undefined,
@@ -80,7 +80,6 @@ export default function Step1() {
       setDraftRange(range);
     }
   }, [datesOpen]);
-
 
   const maxRangeDays = 14;
   const maxToDate = draftRange?.from ? addDays(draftRange.from, maxRangeDays - 1) : undefined;
@@ -125,14 +124,12 @@ export default function Step1() {
     setPhase("from");
   };
 
-
   const displayValue =
     range.from && range.to
-      ? `${format(range.from, 'dd.MM.yyyy')} – ${format(range.to, 'dd.MM.yyyy')}`
+      ? `${format(range.from, "dd.MM.yyyy")} – ${format(range.to, "dd.MM.yyyy")}`
       : range.from
-        ? `${format(range.from, 'dd.MM.yyyy')} – …`
-        : 'Wybierz daty';
-
+        ? `${format(range.from, "dd.MM.yyyy")} – …`
+        : "Wybierz daty";
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -143,16 +140,14 @@ export default function Step1() {
         setShowOriginSuggestions(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleDestinationChange = (value: string) => {
-    setValue('destination', value, { shouldValidate: true });
+    setValue("destination", value, { shouldValidate: true });
     if (value.length > 0) {
-      const filtered = DESTINATIONS.filter((d) =>
-        d.toLowerCase().includes(value.toLowerCase())
-      );
+      const filtered = DESTINATIONS.filter((d) => d.toLowerCase().includes(value.toLowerCase()));
       setDestinationSuggestions(filtered);
       setShowDestSuggestions(true);
     } else {
@@ -162,11 +157,9 @@ export default function Step1() {
   };
 
   const handleOriginChange = (value: string) => {
-    setValue('origin', value, { shouldValidate: true });
+    setValue("origin", value, { shouldValidate: true });
     if (value.length > 0) {
-      const filtered = ORIGINS.filter((o) =>
-        o.toLowerCase().includes(value.toLowerCase())
-      );
+      const filtered = ORIGINS.filter((o) => o.toLowerCase().includes(value.toLowerCase()));
       setOriginSuggestions(filtered);
       setShowOriginSuggestions(true);
     } else {
@@ -184,19 +177,19 @@ export default function Step1() {
       flexibility: data.flexibility,
       travelers: data.travelers,
     });
-    navigate('/plan/step-2');
+    navigate("/plan/step-2");
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="flex items-center justify-between p-4 md:p-6">
         <Link
           to="/"
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+          className="rounded-lg p-2 transition-colors hover:bg-white/10"
           aria-label="Wróć"
         >
-          <ArrowLeft className="w-6 h-6 text-foreground" />
+          <ArrowLeft className="h-6 w-6 text-foreground" />
         </Link>
         <h1 className="text-xl font-bold text-foreground">Itin</h1>
         <div className="w-10" />
@@ -208,11 +201,11 @@ export default function Step1() {
       </div>
 
       {/* Form */}
-      <main className="flex-1 flex flex-col items-center px-4 py-6">
-        <div className="max-w-md w-full">
+      <main className="flex flex-1 flex-col items-center px-4 py-6">
+        <div className="w-full max-w-md">
           <GlassCard>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <h2 className="text-2xl font-bold text-foreground text-center mb-6">
+              <h2 className="mb-6 text-center text-2xl font-bold text-foreground">
                 Dokąd chcesz pojechać?
               </h2>
 
@@ -230,13 +223,13 @@ export default function Step1() {
                     autoComplete="off"
                   />
                   {showDestSuggestions && destinationSuggestions.length > 0 && (
-                    <ul className="absolute z-10 w-full mt-1 bg-secondary border border-border rounded-lg shadow-lg overflow-hidden">
+                    <ul className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-border bg-secondary shadow-lg">
                       {destinationSuggestions.map((s) => (
                         <li
                           key={s}
-                          className="px-4 py-2 hover:bg-accent cursor-pointer text-foreground"
+                          className="cursor-pointer px-4 py-2 text-foreground hover:bg-accent"
                           onClick={() => {
-                            setValue('destination', s, { shouldValidate: true });
+                            setValue("destination", s, { shouldValidate: true });
                             setShowDestSuggestions(false);
                           }}
                         >
@@ -265,13 +258,13 @@ export default function Step1() {
                     autoComplete="off"
                   />
                   {showOriginSuggestions && originSuggestions.length > 0 && (
-                    <ul className="absolute z-10 w-full mt-1 bg-secondary border border-border rounded-lg shadow-lg overflow-hidden">
+                    <ul className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-border bg-secondary shadow-lg">
                       {originSuggestions.map((s) => (
                         <li
                           key={s}
-                          className="px-4 py-2 hover:bg-accent cursor-pointer text-foreground"
+                          className="cursor-pointer px-4 py-2 text-foreground hover:bg-accent"
                           onClick={() => {
-                            setValue('origin', s, { shouldValidate: true });
+                            setValue("origin", s, { shouldValidate: true });
                             setShowOriginSuggestions(false);
                           }}
                         >
@@ -297,7 +290,7 @@ export default function Step1() {
                       variant="outline"
                       className={cn(
                         "input-dark w-full justify-between font-normal",
-                        !range.from && "text-muted-foreground"
+                        !range.from && "text-muted-foreground",
                       )}
                     >
                       <span>{displayValue}</span>
@@ -329,27 +322,27 @@ export default function Step1() {
                 )}
               </div>
 
-
               {/* Flexibility */}
               <div className="space-y-2">
                 <Label>Elastyczność dat</Label>
                 <div className="grid grid-cols-2 gap-3">
-                  {(['strict', 'flexible'] as const).map((opt) => (
+                  {(["strict", "flexible"] as const).map((opt) => (
                     <label
                       key={opt}
-                      className={`flex items-center justify-center p-3 rounded-lg border cursor-pointer transition-all ${watch('flexibility') === opt
-                        ? 'border-primary bg-primary/10 text-foreground'
-                        : 'border-border bg-input hover:border-muted-foreground text-muted-foreground'
-                        }`}
+                      className={`flex cursor-pointer items-center justify-center rounded-lg border p-3 transition-all ${
+                        watch("flexibility") === opt
+                          ? "border-primary bg-primary/10 text-foreground"
+                          : "border-border bg-input text-muted-foreground hover:border-muted-foreground"
+                      }`}
                     >
                       <input
                         type="radio"
                         value={opt}
-                        {...register('flexibility')}
+                        {...register("flexibility")}
                         className="sr-only"
                       />
                       <span className="text-sm font-medium">
-                        {opt === 'strict' ? 'Sztywne' : 'Elastyczne'}
+                        {opt === "strict" ? "Sztywne" : "Elastyczne"}
                       </span>
                     </label>
                   ))}
@@ -360,16 +353,16 @@ export default function Step1() {
               <div className="space-y-2">
                 <Label htmlFor="travelers">Liczba podróżnych</Label>
                 <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5 text-muted-foreground" />
+                  <Users className="h-5 w-5 text-muted-foreground" />
                   <Input
                     id="travelers"
                     type="number"
                     min={1}
                     max={10}
                     className="input-dark w-20 text-center"
-                    {...register('travelers', { valueAsNumber: true })}
+                    {...register("travelers", { valueAsNumber: true })}
                   />
-                  <span className="text-muted-foreground text-sm">osób</span>
+                  <span className="text-sm text-muted-foreground">osób</span>
                 </div>
                 {errors.travelers && (
                   <p className="text-sm text-destructive">{errors.travelers.message}</p>
@@ -377,11 +370,7 @@ export default function Step1() {
               </div>
 
               {/* Submit */}
-              <Button
-                type="submit"
-                className="btn-lime w-full"
-                disabled={!isValid}
-              >
+              <Button type="submit" className="btn-lime w-full" disabled={!isValid}>
                 Dalej
               </Button>
             </form>
