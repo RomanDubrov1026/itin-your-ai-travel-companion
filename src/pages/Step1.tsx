@@ -2,7 +2,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, Users, Calendar } from 'lucide-react';
+import { addDays } from 'date-fns';
+import { pl } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
+import { ArrowLeft, Users, Calendar as CalendarIcon } from 'lucide-react';
+import type { DateRange } from 'react-day-picker';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,6 +61,78 @@ export default function Step1() {
 
   const destination = watch('destination');
   const origin = watch('origin');
+  const startDate = watch('startDate');
+  const endDate = watch('endDate');
+
+  const range: DateRange = {
+    from: startDate ? new Date(startDate) : undefined,
+    to: endDate ? new Date(endDate) : undefined,
+  };
+
+  const [datesOpen, setDatesOpen] = useState(false);
+
+  const [phase, setPhase] = useState<"from" | "to">("from");
+  const [draftRange, setDraftRange] = useState<DateRange | undefined>(range);
+
+  useEffect(() => {
+    if (datesOpen) {
+      setPhase("from");
+      setDraftRange(range);
+    }
+  }, [datesOpen]);
+
+
+  const maxRangeDays = 14;
+  const maxToDate = draftRange?.from ? addDays(draftRange.from, maxRangeDays - 1) : undefined;
+
+  const disabled = (date: Date) => {
+    if (phase === "to" && draftRange?.from && maxToDate) {
+      return date < draftRange.from || date > maxToDate;
+    }
+    return false;
+  };
+
+  const onRangeSelect = (next?: DateRange) => {
+    if (!next?.from) {
+      setDraftRange(undefined);
+      setPhase("from");
+      setValue("startDate", "", { shouldValidate: true });
+      setValue("endDate", "", { shouldValidate: true });
+      return;
+    }
+
+    // First click: always set "from", clear "to", keep popover open
+    if (phase === "from") {
+      setDraftRange({ from: next.from, to: undefined });
+      setPhase("to");
+      setValue("startDate", format(next.from, "yyyy-MM-dd"), { shouldValidate: true });
+      setValue("endDate", "", { shouldValidate: true });
+      return;
+    }
+
+    // Second click: set "to" and close
+    const from = draftRange?.from ?? next.from;
+    const to = next.to ?? next.from; // allow 1-day range if user clicks same day
+
+    // enforce max range
+    const maxTo = addDays(from, maxRangeDays - 1);
+    if (to > maxTo) return;
+
+    setDraftRange({ from, to });
+    setValue("endDate", format(to, "yyyy-MM-dd"), { shouldValidate: true });
+
+    setDatesOpen(false);
+    setPhase("from");
+  };
+
+
+  const displayValue =
+    range.from && range.to
+      ? `${format(range.from, 'dd.MM.yyyy')} – ${format(range.to, 'dd.MM.yyyy')}`
+      : range.from
+        ? `${format(range.from, 'dd.MM.yyyy')} – …`
+        : 'Wybierz daty';
+
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -209,38 +287,48 @@ export default function Step1() {
               </div>
 
               {/* Dates */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="startDate">Od</Label>
-                  <div className="relative">
-                    <Input
-                      id="startDate"
-                      type="date"
-                      className="input-dark"
-                      {...register('startDate')}
+              <div className="space-y-2">
+                <Label>Dates</Label>
+
+                <Popover open={datesOpen} onOpenChange={setDatesOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(
+                        "input-dark w-full justify-between font-normal",
+                        !range.from && "text-muted-foreground"
+                      )}
+                    >
+                      <span>{displayValue}</span>
+                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </PopoverTrigger>
+
+                  <PopoverContent className="w-auto p-3" align="start">
+                    <Calendar
+                      mode="range"
+                      selected={draftRange}
+                      onSelect={onRangeSelect}
+                      disabled={disabled}
+                      numberOfMonths={2}
+                      initialFocus
+                      locale={pl}
                     />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                  </div>
-                  {errors.startDate && (
-                    <p className="text-sm text-destructive">{errors.startDate.message}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="endDate">Do</Label>
-                  <div className="relative">
-                    <Input
-                      id="endDate"
-                      type="date"
-                      className="input-dark"
-                      {...register('endDate')}
-                    />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                  </div>
-                  {errors.endDate && (
-                    <p className="text-sm text-destructive">{errors.endDate.message}</p>
-                  )}
-                </div>
+
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Maksymalnie {maxRangeDays} dni.
+                    </p>
+                  </PopoverContent>
+                </Popover>
+
+                {(errors.startDate || errors.endDate) && (
+                  <p className="text-sm text-destructive">
+                    {errors.endDate?.message || errors.startDate?.message}
+                  </p>
+                )}
               </div>
+
 
               {/* Flexibility */}
               <div className="space-y-2">
@@ -249,11 +337,10 @@ export default function Step1() {
                   {(['strict', 'flexible'] as const).map((opt) => (
                     <label
                       key={opt}
-                      className={`flex items-center justify-center p-3 rounded-lg border cursor-pointer transition-all ${
-                        watch('flexibility') === opt
-                          ? 'border-primary bg-primary/10 text-foreground'
-                          : 'border-border bg-input hover:border-muted-foreground text-muted-foreground'
-                      }`}
+                      className={`flex items-center justify-center p-3 rounded-lg border cursor-pointer transition-all ${watch('flexibility') === opt
+                        ? 'border-primary bg-primary/10 text-foreground'
+                        : 'border-border bg-input hover:border-muted-foreground text-muted-foreground'
+                        }`}
                     >
                       <input
                         type="radio"
